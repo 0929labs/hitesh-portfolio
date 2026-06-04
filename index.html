@@ -907,41 +907,47 @@ ul.project-points li::before { content: '\2014'; color: var(--accent); flex-shri
 .labs-title a:hover::after { width: 100%; }
 .labs-title em { font-style: normal; color: var(--accent); }
 .labs-desc { max-width: 680px; color: var(--muted); line-height: 1.7; margin-bottom: 1.6rem; font-size: .95rem; }
-/* experimental cyan/accent glow button */
+/* experimental cyan/accent glow button — bold & curious */
 .labs-coming {
   display: inline-flex;
   align-items: center;
   gap: .6rem;
   font-family: var(--font-mono);
-  font-size: .7rem;
+  font-size: .75rem;
   letter-spacing: .15em;
   text-transform: uppercase;
-  color: var(--accent2);
-  background: rgba(91,156,246,.08);
-  border: 1px solid var(--accent);
-  padding: .45rem .9rem;
+  color: var(--accent);
+  background: rgba(91,156,246,.15);
+  border: 2px solid var(--accent);
+  padding: .6rem 1.2rem;
   border-radius: 999px;
   transition: all .3s ease;
   position: relative;
   overflow: hidden;
+  font-weight: 500;
+  box-shadow: 0 0 12px rgba(91,156,246,.25);
 }
 .labs-coming::before {
   content: '';
-  width: 6px; height: 6px;
+  width: 8px; height: 8px;
   background: var(--accent);
   border-radius: 50%;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(91,156,246,.5);
+  box-shadow: 0 0 12px rgba(91,156,246,.6);
   animation: pulse-glow 2s ease-in-out infinite;
 }
 .labs-coming:hover {
-  background: rgba(91,156,246,.15);
+  background: rgba(91,156,246,.25);
   border-color: var(--accent2);
-  box-shadow: 0 0 20px rgba(91,156,246,.3);
+  box-shadow: 0 0 24px rgba(91,156,246,.5);
+  transform: translateY(-2px);
+}
+.labs-coming:hover::before {
+  box-shadow: 0 0 20px rgba(91,156,246,.8);
 }
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(91,156,246,.5); }
-  50% { box-shadow: 0 0 16px rgba(91,156,246,.8); }
+  0%, 100% { box-shadow: 0 0 12px rgba(91,156,246,.6); }
+  50% { box-shadow: 0 0 20px rgba(91,156,246,1); }
 }
 .labs-restricted {
   position: absolute;
@@ -1673,10 +1679,10 @@ footer { padding: 2rem 0; border-top: 1px solid var(--border); }
       <div class="labs-glow" aria-hidden="true"></div>
       <div class="labs-inner">
         <div class="label">Studio</div>
-        <h2 class="labs-title"><a href="/0929/">0929 <em>Labs</em></a></h2>
+        <h2 class="labs-title"><a href="/0929/" target="_blank" rel="noopener noreferrer">0929 <em>Labs</em></a></h2>
         <p class="labs-desc">Experimental engineering and future systems studio focused on advanced concepts, technical experimentation, and next-generation product development. Currently in a controlled early development stage with exploration of the intersection between structural engineering, simulation, and emerging manufacturing methods.</p>
         <!-- CHANGE 5: coming soon in red — dot, text, and pill border all red -->
-        <a href="/0929/" class="labs-coming">Open Dimension</a>
+        <a href="/0929/" target="_blank" rel="noopener noreferrer" class="labs-coming">Click to Open Dimension</a>
       </div>
       <div class="labs-restricted" aria-hidden="true">Access Restricted</div>
     </div>
