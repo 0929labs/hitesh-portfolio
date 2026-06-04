@@ -1,1 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0929 Labs</title>
+<meta name="description" content="0929 Labs — websites, photography, vibe coding, and everything in between.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
 
+/* ── RESET ── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+button{cursor:pointer;background:none;border:none;}
+
+/* ── TOKENS ── */
+:root{
+  --white:#ffffff;
+  --off:#f5f4f0;
+  --paper:#ede9e1;
+  --ink:#111111;
+  --ink2:#333333;
+  --mid:#888888;
+  --lite:#cccccc;
+  --red:#e01010;
+  --yellow:#f5e642;
+  --cyan:#00e5ff;
+  --max:1400px;
+  --nav-h:72px;
+  --mono:'Space Mono',monospace;
+  --sans:'Space Grotesk',sans-serif;
+  --display:'Bebas Neue',sans-serif;
+}
+
+/* ── BODY ── */
+body{
+  font-family:var(--sans);
+  background:var(--white);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* dot-grid texture */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(0,0,0,.07) 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── PROGRESS ── */
+#prog{
+  position:fixed;top:0;left:0;height:3px;width:0;
+  background:var(--red);z-index:9999;
+  transition:width .1s linear;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;width:100%;height:var(--nav-h);
+  display:flex;align-items:center;
+  z-index:800;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:2px solid var(--ink);
+}
+.nav-inner{
+  width:min(var(--max),calc(100% - 2.5rem));
+  margin:auto;
+  display:flex;align-items:center;justify-content:space-between;
+}
+/* logo always visible */
+.nav-logo{display:flex;align-items:center;}
+.nav-logo img{
+  height:40px;width:auto;display:block;
+  /* logo is black on transparent — works on white nav */
+}
+.nav-logo-text{
+  font-family:var(--display);font-size:1.6rem;letter-spacing:.04em;
+  color:var(--ink);line-height:1;
+}
+.nav-links{display:flex;align-items:center;gap:2.5rem;}
+.nav-links a{
+  font-family:var(--mono);font-size:.66rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink2);transition:color .15s;
+  position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;left:0;bottom:-3px;
+  width:0;height:2px;background:var(--red);
+  transition:width .2s;
+}
+.nav-links a:hover{color:var(--red);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;
+  background:var(--ink);color:var(--white);
+  padding:.5rem 1.1rem;
+  border:2px solid var(--ink);
+  transition:background .15s,color .15s,border-color .15s;
+}
+.nav-cta:hover{background:var(--red);border-color:var(--red);}
+
+/* burger */
+.m-btn{display:none;flex-direction:column;gap:5px;padding:.4rem;}
+.m-btn span{display:block;width:22px;height:2px;background:var(--ink);border-radius:1px;transition:.3s;}
+.m-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.m-btn.open span:nth-child(2){opacity:0;}
+.m-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.m-menu{
+  display:none;position:fixed;
+  top:var(--nav-h);left:0;width:100%;
+  background:var(--white);border-bottom:2px solid var(--ink);
+  padding:1.5rem;flex-direction:column;gap:.5rem;
+  z-index:790;
+}
+.m-menu.open{display:flex;}
+.m-menu a{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.85rem 1rem;border:1px solid var(--lite);
+  transition:border-color .15s,background .15s;
+}
+.m-menu a:hover{border-color:var(--ink);background:var(--off);}
+
+/* ── LAYOUT ── */
+.wrap{width:min(var(--max),calc(100% - 2.5rem));margin:auto;position:relative;z-index:1;}
+
+/* ── TICKER ── */
+.ticker{
+  overflow:hidden;
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  background:var(--red);padding:.5rem 0;
+  position:relative;z-index:1;
+}
+.ticker-track{
+  display:flex;width:max-content;
+  animation:ticker 22s linear infinite;
+}
+.ticker-track span{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--white);white-space:nowrap;padding:0 2.5rem;
+}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ── BUTTONS ── */
+.btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:.75rem 1.5rem;border:2px solid;
+  transition:transform .15s,box-shadow .15s,background .15s,color .15s;
+  cursor:pointer;
+}
+.btn:hover{transform:translate(-2px,-2px);}
+.btn-solid{background:var(--ink);color:var(--white);border-color:var(--ink);}
+.btn-solid:hover{background:var(--red);border-color:var(--red);box-shadow:3px 3px 0 var(--ink);}
+.btn-outline{background:transparent;color:var(--ink);border-color:var(--ink);}
+.btn-outline:hover{background:var(--yellow);box-shadow:3px 3px 0 var(--ink);}
+.btn-cyan{background:var(--cyan);color:var(--ink);border-color:var(--cyan);}
+.btn-cyan:hover{background:var(--white);border-color:var(--ink);box-shadow:3px 3px 0 var(--cyan);}
+
+/* ── SECTION FRAME ── */
+.s-frame{
+  border-bottom:2px solid var(--ink);
+  padding:5rem 0;
+  position:relative;overflow:hidden;
+}
+.s-label{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--mid);display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;
+}
+.s-label::before{content:'';width:18px;height:2px;background:var(--red);}
+.s-title{
+  font-family:var(--display);
+  font-size:clamp(56px,8vw,96px);
+  line-height:.9;letter-spacing:.01em;
+  margin-bottom:2.5rem;
+}
+.s-title em{font-style:normal;color:var(--red);}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease;}
+.rv.in{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero{
+  height:calc(100vh - var(--nav-h) - 36px);
+  min-height:500px;
+  display:flex;flex-direction:column;
+  border-bottom:2px solid var(--ink);
+  position:relative;overflow:hidden;
+}
+/* faint 0929 watermark — subtler */
+.hero-bg-num{
+  position:absolute;
+  right:-20px;top:50%;transform:translateY(-50%) rotate(90deg);
+  font-family:var(--display);font-size:clamp(160px,22vw,280px);
+  color:rgba(0,0,0,.025);pointer-events:none;
+  line-height:1;user-select:none;white-space:nowrap;z-index:0;
+}
+/* eyebrow — top of hero, inside side padding */
+.hero-eyebrow{
+  position:relative;z-index:1;
+  font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mid);display:flex;align-items:center;gap:.6rem;
+  padding:2rem 0 0;
+  width:min(var(--max),calc(100% - 5rem));
+  margin:0 auto;
+}
+.hero-eyebrow::before{content:'◼';color:var(--red);font-size:.5rem;}
+/* title — full viewport width, grows to fill remaining space */
+.hero-title{
+  position:relative;z-index:1;
+  font-family:var(--display);
+  font-size:10px; /* set precisely by JS after fonts load */
+  line-height:1;
+  letter-spacing:.01em;
+  white-space:nowrap;
+  /* span full viewport — ignore body/wrap padding */
+  width:100vw;
+  padding:0 0 0 0;
+  display:flex;align-items:center;
+  /* vertically fill remaining space between eyebrow and bottom row */
+  flex:1;
+  /* pad slightly so it doesn't clip at edges */
+  padding:0 calc((100vw - min(var(--max), 100vw - 5rem)) / 2);
+  box-sizing:border-box;
+}
+.hero-title .red{color:var(--red);}
+/* bottom row — inside side padding, pinned to bottom */
+.hero-bottom{
+  position:relative;z-index:1;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;
+  width:min(var(--max),calc(100% - 5rem));
+  margin:0 auto;
+  padding-bottom:2.5rem;
+}
+.hero-subtitle{
+  font-size:1rem;line-height:1.8;
+  color:var(--ink2);max-width:500px;
+  border-left:3px solid var(--red);padding-left:1rem;
+}
+.hero-cta-row{display:flex;gap:1rem;flex-wrap:wrap;flex-shrink:0;}
+
+
+
+/* ═══════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════ */
+.about-layout{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:5rem;
+  align-items:start;
+}
+.about-text p{
+  font-size:1rem;line-height:1.85;color:var(--ink2);margin-bottom:1.1rem;
+}
+.about-text p strong{color:var(--ink);font-weight:600;}
+.about-text p:first-of-type{
+  font-size:1.35rem;line-height:1.5;font-weight:500;color:var(--ink);
+}
+.origin-tag{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  background:var(--yellow);color:var(--ink);
+  border:2px solid var(--ink);
+  padding:.38rem .85rem;margin-bottom:1.6rem;
+  position:relative;
+}
+.origin-tag::after{
+  content:'';position:absolute;right:-5px;bottom:-5px;
+  width:100%;height:100%;background:var(--ink);z-index:-1;
+}
+/* what-we-do list */
+.about-list{
+  list-style:none;padding:0;margin-top:1.5rem;
+  border-top:2px solid var(--ink);
+}
+.about-list li{
+  font-family:var(--mono);font-size:.75rem;letter-spacing:.06em;
+  padding:.75rem 0;border-bottom:1px solid var(--lite);
+  display:flex;align-items:center;gap:.75rem;color:var(--ink2);
+}
+.about-list li::before{content:'◼';color:var(--red);font-size:.42rem;flex-shrink:0;}
+.about-list li strong{color:var(--ink);}
+/* sidebar callout box */
+.about-callout{
+  background:var(--ink);color:var(--white);
+  padding:2rem;margin-bottom:1.2rem;
+  position:relative;
+}
+.about-callout-num{
+  font-family:var(--display);font-size:5rem;color:var(--red);
+  line-height:1;margin-bottom:.3rem;
+}
+.about-callout-label{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.5);
+}
+.about-callout-yellow{background:var(--yellow);color:var(--ink);}
+.about-callout-yellow .about-callout-num{color:var(--ink);}
+.about-callout-yellow .about-callout-label{color:var(--ink2);}
+
+/* ═══════════════════════════════════════
+   WEBSITES
+═══════════════════════════════════════ */
+.sites-strip{
+  display:flex;gap:1.5rem;
+  overflow-x:auto;padding-bottom:1rem;
+  scrollbar-width:thin;scrollbar-color:var(--ink) var(--off);
+}
+.sites-strip::-webkit-scrollbar{height:4px;}
+.sites-strip::-webkit-scrollbar-track{background:var(--off);}
+.sites-strip::-webkit-scrollbar-thumb{background:var(--ink);}
+.site-card{
+  flex-shrink:0;width:320px;
+  border:2px solid var(--ink);
+  background:var(--white);
+  transition:transform .18s,box-shadow .18s;
+}
+.site-card:hover{transform:translate(-4px,-4px);box-shadow:4px 4px 0 var(--ink);}
+.site-thumb{
+  height:170px;background:var(--paper);
+  border-bottom:2px solid var(--ink);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+/* replace this with an actual screenshot img inside .site-thumb */
+.site-thumb-pattern{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,0,0,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,0,0,.05) 1px,transparent 1px);
+  background-size:18px 18px;
+}
+.site-thumb img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  position:absolute;inset:0;
+}
+.site-thumb-label{
+  font-family:var(--display);font-size:2.6rem;
+  color:rgba(0,0,0,.15);position:relative;z-index:1;
+  text-align:center;line-height:1;
+}
+.site-body{padding:1.3rem;}
+.site-status{
+  font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.55rem;
+}
+.site-status.live{color:var(--red);}
+.site-status.live::before{content:'●';}
+.site-status.wip{color:var(--mid);}
+.site-status.wip::before{content:'◌';}
+.site-name{font-size:1.1rem;font-weight:700;letter-spacing:-.02em;margin-bottom:.4rem;}
+.site-desc{font-size:.82rem;color:var(--mid);line-height:1.6;margin-bottom:1rem;}
+.site-link{
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--red);display:flex;align-items:center;gap:.35rem;
+  transition:gap .15s;cursor:pointer;
+}
+.site-card:hover .site-link{gap:.65rem;}
+/* scroll hint — mobile only */
+.scroll-hint{
+  display:none;
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--mid);
+  margin-top:1.2rem;
+}
+
+/* ═══════════════════════════════════════
+   PHOTOGRAPHY + EVENTS (merged)
+═══════════════════════════════════════ */
+.photo-section{background:var(--off);}
+/* bento grid — swap .photo-cell children for real <img> tags */
+.photo-bento{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  grid-template-rows:220px 220px;
+  gap:2px;
+  border:2px solid var(--ink);
+  margin-bottom:2rem;
+}
+.photo-cell{
+  background:var(--paper);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.photo-cell:nth-child(1){grid-row:span 2;}
+/* striped placeholder — disappears once you add a real img */
+.photo-cell-inner{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(
+    -55deg,transparent,transparent 8px,
+    rgba(0,0,0,.022) 8px,rgba(0,0,0,.022) 9px
+  );
+  display:flex;align-items:center;justify-content:center;
+}
+.photo-label{
+  font-family:var(--display);font-size:clamp(1rem,2.5vw,1.8rem);
+  color:rgba(0,0,0,.16);text-align:center;line-height:1.2;padding:.8rem;
+}
+/* real photo inside cell */
+.photo-cell img{
+  width:100%;height:100%;object-fit:cover;
+  position:absolute;inset:0;
+  transition:transform .4s;
+}
+.photo-cell:hover img{transform:scale(1.04);}
+
+/* events row — inside photography */
+.events-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;
+  margin-bottom:2rem;
+}
+.event-card{
+  border:2px solid var(--ink);padding:1.8rem;
+  background:var(--white);
+  position:relative;overflow:hidden;
+  transition:transform .18s,box-shadow .18s;
+}
+.event-card:hover{transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--ink);}
+.event-card::before{
+  content:attr(data-num);
+  position:absolute;right:-8px;top:-16px;
+  font-family:var(--display);font-size:100px;
+  color:rgba(0,0,0,.04);line-height:1;pointer-events:none;
+}
+.event-tag{
+  font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;
+  background:var(--red);color:var(--white);
+  display:inline-block;padding:.22rem .6rem;margin-bottom:.7rem;
+}
+.event-name{font-family:var(--display);font-size:2rem;line-height:1;margin-bottom:.6rem;}
+.event-desc{font-size:.85rem;color:var(--mid);line-height:1.65;}
+
+/* celebrity callout */
+.celeb-bar{
+  display:flex;align-items:center;gap:1.5rem;
+  background:var(--yellow);border:2px solid var(--ink);
+  padding:1.2rem 1.8rem;flex-wrap:wrap;
+}
+.celeb-bar-icon{font-size:1.5rem;flex-shrink:0;}
+.celeb-bar-text{flex:1;}
+.celeb-bar-title{font-weight:700;font-size:.95rem;margin-bottom:.2rem;}
+.celeb-bar-sub{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;color:var(--ink2);}
+.celeb-names{display:flex;gap:.5rem;flex-wrap:wrap;}
+.celeb-name{
+  font-family:var(--mono);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;
+  background:var(--ink);color:var(--white);padding:.28rem .65rem;
+}
+
+/* subjects pills */
+.subjects-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1.6rem;}
+.subject-pill{
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  border:2px solid var(--ink);padding:.32rem .75rem;
+  transition:background .15s,color .15s,transform .15s;cursor:default;
+}
+.subject-pill:hover{background:var(--ink);color:var(--white);transform:rotate(-1deg);}
+
+/* ═══════════════════════════════════════
+   VIBE CODING
+═══════════════════════════════════════ */
+.vibe-section{background:var(--ink);color:var(--white);}
+.vibe-section .s-label{color:rgba(255,255,255,.3);}
+.vibe-section .s-label::before{background:var(--cyan);}
+.vibe-section .s-title{color:var(--white);}
+.vibe-section .s-title em{color:var(--cyan);}
+
+.vibe-intro{
+  font-size:1rem;color:rgba(255,255,255,.5);max-width:580px;
+  line-height:1.8;border-left:3px solid var(--cyan);
+  padding-left:1rem;margin-bottom:2.5rem;
+}
+
+.vibe-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:1px;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.1);
+}
+.vibe-card{
+  background:var(--ink);padding:2rem;
+  transition:background .2s;position:relative;overflow:hidden;
+}
+.vibe-card:hover{background:#1c1c1c;}
+.vibe-bg-num{
+  position:absolute;right:1.2rem;top:.8rem;
+  font-family:var(--display);font-size:3rem;
+  color:rgba(255,255,255,.06);line-height:1;pointer-events:none;
+}
+.vibe-icon{font-size:1.3rem;margin-bottom:.9rem;}
+.vibe-name{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:.45rem;}
+.vibe-desc{font-size:.82rem;color:rgba(255,255,255,.42);line-height:1.65;}
+.vibe-pill{
+  display:inline-block;margin-top:.8rem;
+  font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cyan);border:1px solid rgba(0,229,255,.22);padding:.2rem .55rem;
+}
+
+.vibe-manifesto{
+  margin-top:2.5rem;border-top:1px solid rgba(255,255,255,.08);
+  padding-top:2rem;font-family:var(--mono);font-size:.75rem;
+  letter-spacing:.05em;color:rgba(255,255,255,.25);line-height:2.2;max-width:680px;
+}
+.vibe-manifesto .hi{color:var(--cyan);}
+.vibe-cta{margin-top:2rem;}
+
+/* ═══════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════ */
+.contact-section{background:var(--off);}
+.contact-layout{
+  display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;
+}
+.contact-big{
+  font-family:var(--display);
+  font-size:clamp(60px,8vw,108px);
+  line-height:.88;letter-spacing:.01em;margin-bottom:2rem;
+}
+.contact-big em{font-style:normal;color:var(--red);}
+.contact-info{display:flex;flex-direction:column;gap:.8rem;margin-bottom:1.8rem;}
+.c-item{
+  display:flex;align-items:center;gap:.9rem;
+  border:2px solid var(--ink);background:var(--white);
+  padding:.85rem 1.1rem;
+  transition:transform .18s,box-shadow .18s;
+}
+.c-item:hover{transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--ink);}
+.c-icon{font-size:1rem;flex-shrink:0;}
+.c-label{font-family:var(--mono);font-size:.54rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);margin-bottom:.1rem;}
+.c-val{font-size:.88rem;color:var(--ink);transition:color .15s;}
+.c-item:hover .c-val{color:var(--red);}
+
+.c-form{background:var(--white);border:2px solid var(--ink);padding:2.2rem;}
+.c-form-title{font-family:var(--display);font-size:2.2rem;line-height:1;margin-bottom:1.4rem;}
+.c-form-title em{font-style:normal;color:var(--red);}
+.fg{display:flex;flex-direction:column;gap:.35rem;margin-bottom:.9rem;}
+.fg label{font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mid);}
+.fg input,.fg textarea,.fg select{
+  border:2px solid var(--lite);
+  padding:.7rem .9rem;font-family:var(--sans);font-size:.88rem;
+  color:var(--ink);background:var(--off);
+  width:100%;outline:none;
+  transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--ink);}
+.fg textarea{resize:vertical;min-height:95px;}
+.fg select option{background:var(--white);}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.form-send{width:100%;justify-content:center;margin-top:.4rem;}
+#fmsg{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;
+  text-align:center;margin-top:.6rem;min-height:1.2em;color:var(--red);}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{border-top:2px solid var(--ink);padding:1.8rem 0;background:var(--white);position:relative;z-index:1;}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.footer-logo img{height:30px;width:auto;}
+.footer-copy{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);}
+.footer-copy a{color:var(--mid);transition:color .15s;}
+.footer-copy a:hover{color:var(--red);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mid);transition:color .15s;}
+.footer-links a:hover{color:var(--red);}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media(max-width:1050px){
+  .about-layout{grid-template-columns:1fr;gap:3rem;}
+  .contact-layout{grid-template-columns:1fr;}
+  .vibe-grid{grid-template-columns:1fr 1fr;}
+  .photo-bento{grid-template-columns:1fr 1fr;grid-template-rows:200px 200px 200px;}
+  .photo-cell:nth-child(1){grid-row:span 1;}
+}
+@media(max-width:760px){
+  :root{--nav-h:66px;}
+  .nav-links,.nav-cta{display:none;}
+  .m-btn{display:flex;}
+  .hero-bottom{flex-direction:column;align-items:flex-start;gap:1.5rem;}
+  .s-title{font-size:clamp(46px,11vw,72px);}
+  .vibe-grid{grid-template-columns:1fr;}
+  .events-row{grid-template-columns:1fr;}
+  .fg-row{grid-template-columns:1fr;}
+  .photo-bento{grid-template-columns:1fr;grid-template-rows:repeat(5,150px);}
+  .footer-inner{flex-direction:column;align-items:center;text-align:center;}
+  .scroll-hint{display:block;}
+}
+@media(max-width:480px){
+  .hero-cta-row{flex-direction:column;align-items:flex-start;}
+  .celeb-bar{flex-direction:column;align-items:flex-start;}
+  .wrap{width:calc(100% - 2rem);}
+}
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+
+<!-- ── NAV ── -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#top" class="nav-logo" aria-label="0929 Labs home">
+      <!--
+        FILE NEEDED: 09_29.png
+        Place it in the same folder as this HTML file.
+        The logo is black on transparent — works on this white nav.
+      -->
+      <img src="09_29.png" alt="0929 Labs"
+           onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='block'">
+      <span id="logo-fallback" class="nav-logo-text" style="display:none">0929 LABS</span>
+    </a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#websites">Websites</a>
+      <a href="#photography">Photography</a>
+      <a href="#vibe">Vibe Coding</a>
+      <a href="#contact" class="nav-cta">Get in Touch</a>
+    </div>
+    <button class="m-btn" id="mBtn" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="m-menu" id="mMenu">
+  <a href="#about">About</a>
+  <a href="#websites">Websites</a>
+  <a href="#photography">Photography</a>
+  <a href="#vibe">Vibe Coding</a>
+  <a href="#contact">Get in Touch</a>
+</div>
+
+<!-- ── TICKER (sits below nav, above hero) ── -->
+<div class="ticker" style="position:relative;z-index:1;margin-top:var(--nav-h);">
+  <div class="ticker-track">
+    <span>Websites</span><span>◼</span>
+    <span>Photography</span><span>◼</span>
+    <span>Automotive Events</span><span>◼</span>
+    <span>Vibe Coding</span><span>◼</span>
+    <span>Product Design</span><span>◼</span>
+    <span>Building Things</span><span>◼</span>
+    <span>Websites</span><span>◼</span>
+    <span>Photography</span><span>◼</span>
+    <span>Automotive Events</span><span>◼</span>
+    <span>Vibe Coding</span><span>◼</span>
+    <span>Product Design</span><span>◼</span>
+    <span>Building Things</span><span>◼</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="hero" id="top">
+  <div class="hero-bg-num" aria-hidden="true">0929</div>
+
+  <div class="hero-eyebrow rv">A creative workstation</div>
+
+  <h1 class="hero-title rv" style="transition-delay:.08s">
+    MAKE <span class="red">ANY</span>THING.
+  </h1>
+
+  <div class="hero-bottom rv" style="transition-delay:.16s">
+    <p class="hero-subtitle">
+      Websites. Photography. Automotive events. Vibe coding.
+      This is everything that isn't engineering — and it's just as serious.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#websites" class="btn btn-solid">See the Work</a>
+      <a href="#contact" class="btn btn-outline">Build Something</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════ -->
+<section class="s-frame" id="about">
+  <div class="wrap">
+    <div class="s-label rv">What is this</div>
+    <div class="about-layout">
+
+      <div class="about-text">
+        <div class="origin-tag rv">09 = birthday &nbsp;·&nbsp; 29 = the day this existed</div>
+        <p class="rv" style="transition-delay:.05s">
+          0929 Labs is the other half. The engineering portfolio is at hiteshraj.in — structured, mechanical, serious.
+          This is everything else.
+        </p>
+        <p class="rv" style="transition-delay:.1s">
+          Websites built properly for people who want something different. Photography of cars, events, cities, and landscapes — some of which got noticed by the right people. Vibe coding that turns ideas into real things without waiting months to learn how.
+          All of it connected by the same stubborn need to make things.
+        </p>
+        <ul class="about-list rv" style="transition-delay:.14s">
+          <li><strong>Websites</strong> — custom HTML/CSS/JS, no templates, deployed and live</li>
+          <li><strong>Photography</strong> — cars, events, street, nature, and everything else worth framing</li>
+          <li><strong>Automotive Events</strong> — on the ground at Gumbal 3000 and HR Owen</li>
+          <li><strong>Vibe Coding</strong> — building tools, apps, and experiments with Claude</li>
+          <li><strong>Product Design</strong> — ideas that want to exist in the real world</li>
+        </ul>
+        <div class="rv" style="transition-delay:.18s;margin-top:1.6rem;">
+          <a href="https://hiteshraj.in" target="_blank" rel="noopener noreferrer" class="btn btn-outline">
+            ↗ Engineering Portfolio
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="about-callout rv">
+          <div class="about-callout-num">3</div>
+          <div class="about-callout-label">Websites shipped</div>
+        </div>
+        <div class="about-callout rv about-callout-yellow" style="transition-delay:.06s">
+          <div class="about-callout-num">2</div>
+          <div class="about-callout-label">DDE creators who reposted my photos</div>
+        </div>
+        <div class="about-callout rv" style="transition-delay:.1s">
+          <div class="about-callout-num">2</div>
+          <div class="about-callout-label">Automotive events attended & shot</div>
+        </div>
+        <div class="about-callout rv" style="transition-delay:.14s;background:var(--red);">
+          <div class="about-callout-num" style="color:var(--white);">∞</div>
+          <div class="about-callout-label" style="color:rgba(255,255,255,.6);">Things left to build</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     WEBSITES
+═══════════════════════════════════════ -->
+<section class="s-frame" id="websites">
+  <div class="wrap">
+    <div class="s-label rv">Built from scratch</div>
+    <h2 class="s-title rv" style="transition-delay:.05s">WEB<em>SITES</em></h2>
+
+    <div class="sites-strip rv" style="transition-delay:.1s">
+
+      <!-- ── CARD 1: hiteshraj.in ──
+           To add a screenshot: place a file named hiteshraj-thumb.jpg (or .png)
+           in the same folder as this HTML, then uncomment the img tag below
+           and remove the site-thumb-pattern and site-thumb-label divs. -->
+      <div class="site-card">
+        <div class="site-thumb">
+          <div class="site-thumb-pattern"></div>
+          <!-- <img src="hiteshraj-thumb.jpg" alt="hiteshraj.in screenshot"> -->
+          <div class="site-thumb-label">HITESH<br>RAJ.IN</div>
+        </div>
+        <div class="site-body">
+          <div class="site-status live">Live</div>
+          <div class="site-name">hiteshraj.in</div>
+          <div class="site-desc">Personal engineering portfolio. CAD, FEA, CFD, full work history. Custom-built and deployed on GitHub Pages.</div>
+          <a href="https://hiteshraj.in" target="_blank" rel="noopener noreferrer" class="site-link">
+            Visit site <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── CARD 2: Raj Farms Coorg ──
+           Screenshot file: rajfarms-thumb.jpg — same folder, uncomment img below -->
+      <div class="site-card">
+        <div class="site-thumb">
+          <div class="site-thumb-pattern"></div>
+          <!-- <img src="rajfarms-thumb.jpg" alt="Raj Farms Coorg screenshot"> -->
+          <div class="site-thumb-label">RAJ<br>FARMS</div>
+        </div>
+        <div class="site-body">
+          <div class="site-status live">Live</div>
+          <div class="site-name">Raj Farms Coorg</div>
+          <div class="site-desc">Farm stay website for a property in Coorg. Built to capture the landscape, not fill in a template.</div>
+          <a href="https://rajfarmscoorg.in" target="_blank" rel="noopener noreferrer" class="site-link">
+            Visit site <span>→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── CARD 3: Two Dots Dental (WIP) ── -->
+      <div class="site-card">
+        <div class="site-thumb">
+          <div class="site-thumb-pattern"></div>
+          <div class="site-thumb-label">TWO<br>DOTS</div>
+        </div>
+        <div class="site-body">
+          <div class="site-status wip">In Development</div>
+          <div class="site-name">Two Dots Dental Clinic</div>
+          <div class="site-desc">Dental clinic website currently being built. Nothing like a typical healthcare site.</div>
+          <span class="site-link" style="color:var(--mid);cursor:default;">Coming soon</span>
+        </div>
+      </div>
+
+      <!-- ── CARD 4: Open slot ── -->
+      <div class="site-card" style="opacity:.42;border-style:dashed;">
+        <div class="site-thumb">
+          <div class="site-thumb-pattern"></div>
+          <div class="site-thumb-label">NEXT<br>?</div>
+        </div>
+        <div class="site-body">
+          <div class="site-status wip">Open</div>
+          <div class="site-name">Your Project</div>
+          <div class="site-desc">Got a website that needs to be built properly? This slot is yours.</div>
+          <a href="#contact" class="site-link" style="color:var(--ink);">Start here <span>→</span></a>
+        </div>
+      </div>
+
+    </div>
+    <div class="scroll-hint">← scroll to see more</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PHOTOGRAPHY + EVENTS
+═══════════════════════════════════════ -->
+<section class="s-frame photo-section" id="photography">
+  <div class="wrap">
+    <div class="s-label rv">Behind the lens</div>
+    <h2 class="s-title rv" style="transition-delay:.05s">PHOTO<em>GRAPHY</em></h2>
+
+    <!--
+      PHOTO GRID — replace placeholder cells with real images.
+      For each cell: add <img src="yourfile.jpg" alt="description">
+      directly inside .photo-cell (alongside or replacing .photo-cell-inner).
+
+      Suggested filenames (place in same folder as HTML):
+        photo-cars.jpg      → cell 1 (large, spans 2 rows)
+        photo-street.jpg    → cell 2
+        photo-events.jpg    → cell 3
+        photo-nature.jpg    → cell 4
+        photo-other.jpg     → cell 5
+    -->
+    <div class="photo-bento rv" style="transition-delay:.08s">
+      <div class="photo-cell">
+        <!-- <img src="photo-cars.jpg" alt="Cars and exotics"> -->
+        <div class="photo-cell-inner"><div class="photo-label">CARS &<br>EXOTICS</div></div>
+      </div>
+      <div class="photo-cell">
+        <!-- <img src="photo-street.jpg" alt="Street photography"> -->
+        <div class="photo-cell-inner"><div class="photo-label">STREET<br>& URBAN</div></div>
+      </div>
+      <div class="photo-cell">
+        <!-- <img src="photo-events.jpg" alt="Automotive events"> -->
+        <div class="photo-cell-inner"><div class="photo-label">EVENTS</div></div>
+      </div>
+      <div class="photo-cell">
+        <!-- <img src="photo-nature.jpg" alt="Nature and travel"> -->
+        <div class="photo-cell-inner"><div class="photo-label">NATURE<br>& TRAVEL</div></div>
+      </div>
+      <div class="photo-cell">
+        <!-- <img src="photo-other.jpg" alt="More photography"> -->
+        <div class="photo-cell-inner"><div class="photo-label">AND<br>MORE</div></div>
+      </div>
+    </div>
+
+    <!-- Celebrity callout -->
+    <div class="celeb-bar rv" style="transition-delay:.12s">
+      <div class="celeb-bar-icon">★</div>
+      <div class="celeb-bar-text">
+        <div class="celeb-bar-title">Reposted by Daily Driven Exotics</div>
+        <div class="celeb-bar-sub">Photos picked up and shared by two DDE creators</div>
+      </div>
+      <div class="celeb-names">
+        <span class="celeb-name">Nico Leonard</span>
+        <span class="celeb-name">Dave Coulter</span>
+      </div>
+    </div>
+
+    <!-- Subject pills -->
+    <div class="subjects-row rv" style="transition-delay:.15s">
+      <span class="subject-pill">Cars</span>
+      <span class="subject-pill">Exotics</span>
+      <span class="subject-pill">Street</span>
+      <span class="subject-pill">Urban</span>
+      <span class="subject-pill">Automotive Events</span>
+      <span class="subject-pill">Nature</span>
+      <span class="subject-pill">Travel</span>
+      <span class="subject-pill">Landscapes</span>
+      <span class="subject-pill">Everything Else</span>
+    </div>
+
+    <!-- Events sub-section -->
+    <div style="margin-top:3rem;">
+      <div class="s-label rv" style="transition-delay:.18s">On the ground</div>
+      <div class="events-row rv" style="transition-delay:.2s">
+        <div class="event-card" data-num="01">
+          <div class="event-tag">Attended &amp; Shot</div>
+          <div class="event-name">Gumbal 3000</div>
+          <div class="event-desc">One of Europe's most spectacular supercar rallies. Shot from the ground — supercars, hypercars, and real crowd energy.</div>
+        </div>
+        <div class="event-card" data-num="02">
+          <div class="event-tag">Attended &amp; Shot</div>
+          <div class="event-name">HR Owen</div>
+          <div class="event-desc">Lamborghini and Bugatti dealer events. The kind of access that makes automotive photography worth doing.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     VIBE CODING
+═══════════════════════════════════════ -->
+<section class="s-frame vibe-section" id="vibe">
+  <div class="wrap">
+    <div class="s-label rv">Built with AI, owned by me</div>
+    <h2 class="s-title rv" style="transition-delay:.05s">VIBE<br><em>CODING</em></h2>
+    <p class="vibe-intro rv" style="transition-delay:.09s">
+      Using Claude to build things that would've taken months to learn from scratch.
+      The idea is mine. The execution is real. The speed is the point.
+    </p>
+
+    <div class="vibe-grid rv" style="transition-delay:.12s">
+      <div class="vibe-card">
+        <div class="vibe-bg-num">01</div>
+        <div class="vibe-icon">🌐</div>
+        <div class="vibe-name">Custom Websites</div>
+        <div class="vibe-desc">Full HTML/CSS/JS sites — no builders, no templates. Designed, built, and deployed end to end.</div>
+        <span class="vibe-pill">Live</span>
+      </div>
+      <div class="vibe-card">
+        <div class="vibe-bg-num">02</div>
+        <div class="vibe-icon">⚙</div>
+        <div class="vibe-name">Tools & Mini Apps</div>
+        <div class="vibe-desc">Small interactive utilities and web apps built because the idea was interesting enough to exist.</div>
+        <span class="vibe-pill">In progress</span>
+      </div>
+      <div class="vibe-card">
+        <div class="vibe-bg-num">03</div>
+        <div class="vibe-icon">◈</div>
+        <div class="vibe-name">Experiments</div>
+        <div class="vibe-desc">No brief, no client. Just curiosity and a blank canvas. Things built to see if they work.</div>
+        <span class="vibe-pill">Always open</span>
+      </div>
+    </div>
+
+    <div class="vibe-manifesto rv" style="transition-delay:.16s">
+      <span class="hi">// </span>The barrier between "I have an idea" and "I built it" used to be months of learning.<br>
+      <span class="hi">// </span>Vibe coding collapsed that gap.<br>
+      <span class="hi">// </span>The ideas were always there. Now they can exist.
+    </div>
+    <div class="vibe-cta rv" style="transition-delay:.2s">
+      <a href="#contact" class="btn btn-cyan">Collab on something →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════ -->
+<section class="s-frame contact-section" id="contact">
+  <div class="wrap">
+    <div class="contact-layout">
+
+      <div>
+        <div class="s-label rv">Get in touch</div>
+        <h2 class="contact-big rv" style="transition-delay:.05s">
+          LET'S<br><em>BUILD</em><br>IT.
+        </h2>
+        <div class="contact-info rv" style="transition-delay:.1s">
+          <!--
+            IMPORTANT: Replace hello@0929labs.com with your real email
+            in both the href and the display text below.
+          -->
+          <div class="c-item">
+            <span class="c-icon">✉</span>
+            <div>
+              <div class="c-label">Email</div>
+              <a href="mailto:hello@0929labs.com" class="c-val">hello@0929labs.com</a>
+            </div>
+          </div>
+          <div class="c-item">
+            <span class="c-icon">⬡</span>
+            <div>
+              <div class="c-label">Engineering Portfolio</div>
+              <a href="https://hiteshraj.in" target="_blank" rel="noopener noreferrer" class="c-val">hiteshraj.in</a>
+            </div>
+          </div>
+        </div>
+        <p class="rv" style="transition-delay:.13s;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--mid);line-height:1.9;max-width:340px;">
+          A website brief, a photography project, a vibe coding collab —
+          if the idea is interesting, it's worth talking about.
+        </p>
+      </div>
+
+      <div class="c-form rv" style="transition-delay:.1s">
+        <div class="c-form-title">New <em>Project</em></div>
+        <form id="cForm" novalidate>
+          <div class="fg-row">
+            <div class="fg">
+              <label for="cn">Name</label>
+              <input type="text" id="cn" name="name" placeholder="Your name" autocomplete="name" required>
+            </div>
+            <div class="fg">
+              <label for="ce">Email</label>
+              <input type="email" id="ce" name="email" placeholder="you@email.com" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="fg">
+            <label for="ct">What do you need?</label>
+            <select id="ct" name="type">
+              <option value="" disabled selected>Pick one</option>
+              <option>Website</option>
+              <option>Photography</option>
+              <option>Vibe Coding / Tool</option>
+              <option>Product Design</option>
+              <option>Collab / Other</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="cm">Message</label>
+            <textarea id="cm" name="message" placeholder="Tell me about it..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-solid form-send">Send it →</button>
+          <div id="fmsg" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <img src="09_29.png" alt="0929 Labs" onerror="this.style.display='none'">
+      </div>
+      <div class="footer-copy">
+        © 2025 0929 Labs &mdash; A studio by
+        <a href="https://hiteshraj.in" target="_blank" rel="noopener noreferrer">Hitesh Raj Aravind</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://hiteshraj.in" target="_blank" rel="noopener noreferrer">Engineering Portfolio</a>
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* fit hero title to full viewport width after fonts load */
+function fitHeroTitle(){
+  const el = document.querySelector('.hero-title');
+  if(!el) return;
+  const available = document.documentElement.clientWidth;
+  const probe = document.createElement('span');
+  probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:"Bebas Neue",sans-serif;font-size:100px;letter-spacing:.01em;';
+  probe.textContent = el.textContent.trim();
+  document.body.appendChild(probe);
+  const naturalW = probe.offsetWidth;
+  document.body.removeChild(probe);
+  if(!naturalW) return;
+  const size = Math.floor(available / naturalW * 100 * 0.998);
+  el.style.fontSize = size + 'px';
+}
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(fitHeroTitle);
+} else {
+  window.addEventListener('load', fitHeroTitle);
+}
+window.addEventListener('resize', fitHeroTitle);
+
+/* scroll progress */
+const prog = document.getElementById('prog');
+window.addEventListener('scroll', () => {
+  const p = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+  prog.style.width = p + '%';
+}, {passive:true});
+
+/* burger */
+const mBtn = document.getElementById('mBtn');
+const mMenu = document.getElementById('mMenu');
+mBtn.addEventListener('click', () => {
+  const open = mMenu.classList.toggle('open');
+  mBtn.classList.toggle('open', open);
+  mBtn.setAttribute('aria-expanded', open);
+});
+mMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mMenu.classList.remove('open');
+  mBtn.classList.remove('open');
+  mBtn.setAttribute('aria-expanded', false);
+}));
+
+/* reveal on scroll */
+const rvEls = document.querySelectorAll('.rv');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  });
+}, {threshold:0.07, rootMargin:'0px 0px -24px 0px'});
+rvEls.forEach(el => io.observe(el));
+
+/* contact form → mailto */
+const cForm = document.getElementById('cForm');
+const fmsg  = document.getElementById('fmsg');
+cForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const name  = cForm.querySelector('[name=name]').value.trim();
+  const email = cForm.querySelector('[name=email]').value.trim();
+  const msg   = cForm.querySelector('[name=message]').value.trim();
+  if (!name || !email || !msg) {
+    fmsg.textContent = 'Fill in all required fields.';
+    fmsg.style.color = 'var(--red)';
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    fmsg.textContent = 'Check that email address.';
+    fmsg.style.color = 'var(--red)';
+    return;
+  }
+  const sub  = encodeURIComponent('0929 Labs — ' + name);
+  const body = encodeURIComponent('From: ' + name + '\nEmail: ' + email + '\n\n' + msg);
+  window.location.href = 'mailto:hello@0929labs.com?subject=' + sub + '&body=' + body;
+  fmsg.textContent = 'Opening your email client…';
+  fmsg.style.color = 'var(--ink)';
+  cForm.reset();
+  setTimeout(() => fmsg.textContent = '', 5000);
+});
+</script>
+</body>
+</html>
