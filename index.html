@@ -875,79 +875,230 @@ ul.project-points li::before { content: '\2014'; color: var(--accent); flex-shri
 /* ===================== LABS ===================== */
 .labs-panel {
   border-radius: var(--r-lg);
-  background: linear-gradient(160deg, rgba(11,15,24,.98), var(--bg));
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(11,15,24,1) 0%, rgba(6,8,13,1) 100%);
+  border: 1px solid var(--border2);
   padding: 4rem;
   position: relative;
   overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 4rem;
+  align-items: center;
 }
+/* subtle grid texture */
 .labs-panel::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: .4;
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
+  border-radius: var(--r-lg);
 }
+/* ambient glow top-right */
 .labs-glow {
   position: absolute;
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(91,156,246,.05), transparent 65%);
-  top: -250px; right: -150px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(91,156,246,.07), transparent 60%);
+  top: -200px; right: -100px;
   pointer-events: none;
 }
-.labs-inner { position: relative; z-index: 1; }
-.labs-title { font-size: clamp(3rem, 7vw, 6rem); font-weight: 700; letter-spacing: -.07em; line-height: .9; margin-bottom: 1.4rem; }
-.labs-title a { color: inherit; transition: all .3s ease; display: inline-block; position: relative; }
-.labs-title a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: var(--accent); transition: width .3s ease; }
-.labs-title a:hover { color: var(--accent); }
-.labs-title a:hover::after { width: 100%; }
-.labs-title em { font-style: normal; color: var(--accent); }
-.labs-desc { max-width: 680px; color: var(--muted); line-height: 1.7; margin-bottom: 1.6rem; font-size: .95rem; }
-/* experimental cyan/accent glow button — bold & curious */
-.labs-coming {
-  display: inline-flex;
-  align-items: center;
-  gap: .6rem;
+.labs-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+.labs-label {
   font-family: var(--font-mono);
-  font-size: .75rem;
-  letter-spacing: .15em;
+  font-size: .65rem;
+  letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--accent);
-  background: rgba(91,156,246,.15);
-  border: 2px solid var(--accent);
-  padding: .6rem 1.2rem;
-  border-radius: 999px;
-  transition: all .3s ease;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+.labs-label::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--accent);
+  opacity: .6;
+}
+.labs-title {
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -.07em;
+  line-height: .9;
+}
+.labs-title a {
+  color: inherit;
+  transition: color .25s ease;
+  display: inline;
+}
+.labs-title a:hover { color: var(--accent2); }
+.labs-title em { font-style: normal; color: var(--accent); }
+.labs-desc {
+  color: var(--muted);
+  line-height: 1.75;
+  font-size: .92rem;
+  max-width: 520px;
+}
+/* mobile button — hidden on desktop */
+.labs-coming { display: none !important; }
+
+/* ── PORTAL ── */
+.labs-portal-wrap {
+  position: relative;
+  z-index: 1;
+  height: 320px;
+}
+.labs-portal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(91,156,246,.25);
+  background: rgba(91,156,246,.04);
   position: relative;
   overflow: hidden;
-  font-weight: 500;
-  box-shadow: 0 0 12px rgba(91,156,246,.25);
+  cursor: pointer;
+  transition: border-color .35s ease, background .35s ease, box-shadow .35s ease;
+  text-decoration: none;
+  color: inherit;
 }
-.labs-coming::before {
+.labs-portal:hover {
+  border-color: rgba(91,156,246,.55);
+  background: rgba(91,156,246,.08);
+  box-shadow: 0 0 48px rgba(91,156,246,.18), inset 0 0 40px rgba(91,156,246,.06);
+}
+/* cursor-following radial glow */
+.labs-portal::after {
   content: '';
-  width: 8px; height: 8px;
-  background: var(--accent);
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 140px at var(--mx,50%) var(--my,50%), rgba(91,156,246,.18), transparent 70%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
+  border-radius: var(--r-md);
+}
+.labs-portal:hover::after { opacity: 1; }
+/* animated particle dots */
+.labs-portal-dot {
+  position: absolute;
   border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(91,156,246,.6);
-  animation: pulse-glow 2s ease-in-out infinite;
+  background: var(--accent);
+  pointer-events: none;
+  animation: portal-float linear infinite;
 }
-.labs-coming:hover {
-  background: rgba(91,156,246,.25);
-  border-color: var(--accent2);
-  box-shadow: 0 0 24px rgba(91,156,246,.5);
-  transform: translateY(-2px);
+.labs-portal-dot:nth-child(1) { width:3px; height:3px; left:15%; top:20%; opacity:.5; animation-duration:6s; animation-delay:0s; }
+.labs-portal-dot:nth-child(2) { width:2px; height:2px; right:20%; top:15%; opacity:.35; animation-duration:8s; animation-delay:1s; }
+.labs-portal-dot:nth-child(3) { width:4px; height:4px; left:70%; top:60%; opacity:.4; animation-duration:7s; animation-delay:2s; }
+.labs-portal-dot:nth-child(4) { width:2px; height:2px; left:30%; bottom:20%; opacity:.3; animation-duration:9s; animation-delay:.5s; }
+.labs-portal-dot:nth-child(5) { width:3px; height:3px; right:25%; bottom:30%; opacity:.45; animation-duration:6.5s; animation-delay:1.5s; }
+.labs-portal-dot:nth-child(6) { width:2px; height:2px; left:55%; top:25%; opacity:.3; animation-duration:10s; animation-delay:3s; }
+.labs-portal-dot:nth-child(7) { width:3px; height:3px; left:20%; top:65%; opacity:.4; animation-duration:7.5s; animation-delay:2.5s; }
+@keyframes portal-float {
+  0%   { transform: translateY(0px) translateX(0px) scale(1); opacity: .4; }
+  25%  { transform: translateY(-14px) translateX(6px) scale(1.2); }
+  50%  { transform: translateY(-8px) translateX(-4px) scale(.9); opacity: .7; }
+  75%  { transform: translateY(-20px) translateX(8px) scale(1.1); }
+  100% { transform: translateY(0px) translateX(0px) scale(1); opacity: .4; }
 }
-.labs-coming:hover::before {
-  box-shadow: 0 0 20px rgba(91,156,246,.8);
+/* portal inner content */
+.labs-portal-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .85rem;
+  pointer-events: none;
 }
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 12px rgba(91,156,246,.6); }
-  50% { box-shadow: 0 0 20px rgba(91,156,246,1); }
+.labs-portal-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(91,156,246,.3);
+  background: rgba(91,156,246,.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .3s, background .3s, transform .3s;
+}
+.labs-portal:hover .labs-portal-icon {
+  border-color: rgba(91,156,246,.6);
+  background: rgba(91,156,246,.16);
+  transform: scale(1.1);
+}
+.labs-portal-icon svg {
+  width: 18px; height: 18px;
+  stroke: var(--accent);
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke .3s;
+}
+.labs-portal:hover .labs-portal-icon svg { stroke: var(--accent2); }
+.labs-portal-text {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.8;
+  transition: color .3s;
+}
+.labs-portal:hover .labs-portal-text { color: var(--accent2); }
+
+/* responsive */
+@media (max-width: 1050px) {
+  .labs-panel {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 2.5rem 1.5rem;
+  }
+  .labs-portal-wrap { display: none; }
+  .labs-coming {
+    display: inline-flex !important;
+    align-items: center;
+    gap: .6rem;
+    font-family: var(--font-mono);
+    font-size: .72rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(91,156,246,.1);
+    border: 1px solid rgba(91,156,246,.3);
+    padding: .6rem 1.2rem;
+    border-radius: 999px;
+    transition: background .2s, border-color .2s;
+  }
+  .labs-coming::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  .labs-coming:hover {
+    background: rgba(91,156,246,.18);
+    border-color: var(--accent);
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .5; transform: scale(.7); }
+  }
 }
 .labs-restricted {
   position: absolute;
@@ -1677,13 +1828,42 @@ footer { padding: 2rem 0; border-top: 1px solid var(--border); }
   <div class="container">
     <div class="labs-panel reveal">
       <div class="labs-glow" aria-hidden="true"></div>
+
+      <!-- LEFT: content -->
       <div class="labs-inner">
-        <div class="label">Studio</div>
-        <h2 class="labs-title"><a href="/0929/" target="_blank" rel="noopener noreferrer">0929 <em>Labs</em></a></h2>
-        <p class="labs-desc">Experimental engineering and future systems studio focused on advanced concepts, technical experimentation, and next-generation product development. Currently in a controlled early development stage with exploration of the intersection between structural engineering, simulation, and emerging manufacturing methods.</p>
-        <!-- CHANGE 5: coming soon in red — dot, text, and pill border all red -->
+        <div class="labs-label">Studio</div>
+        <h2 class="labs-title">
+          <a href="/0929/" target="_blank" rel="noopener noreferrer">0929 <em>Labs</em></a>
+        </h2>
+        <p class="labs-desc">My private corner of the internet where ideas get tested, broken, and rebuilt. Some projects ship. Some exist just to see if they can. Some are serious with serious intentions. Others started as a thought at 2am and somehow made it to a browser. Some of it follows a brief. Most of it does not. There are things here that took months and things that took an afternoon. Some solved a real problem. Some created new ones. Not everything here is explainable. All of it was worth doing. Enter at your own curiosity.</p>
+        <!-- mobile only -->
         <a href="/0929/" target="_blank" rel="noopener noreferrer" class="labs-coming">Click to Open Dimension</a>
       </div>
+
+      <!-- RIGHT: interactive portal -->
+      <div class="labs-portal-wrap">
+        <a href="/0929/" target="_blank" rel="noopener noreferrer" class="labs-portal" id="labsPortal">
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-dot"></div>
+          <div class="labs-portal-inner">
+            <div class="labs-portal-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10"/>
+                <path d="M12 2c2.5 2.5 4 5.5 4 10s-1.5 7.5-4 10"/>
+                <path d="M2 12h20"/>
+              </svg>
+            </div>
+            <div class="labs-portal-text">Click to<br>Open Dimension</div>
+          </div>
+        </a>
+      </div>
+
       <div class="labs-restricted" aria-hidden="true">Access Restricted</div>
     </div>
   </div>
@@ -1737,6 +1917,18 @@ footer { padding: 2rem 0; border-top: 1px solid var(--border); }
 <!-- ==================== SCRIPTS ==================== -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+
+  // ---- PORTAL INTERACTIVE EFFECT ----
+  const portal = document.getElementById('labsPortal');
+  if (portal) {
+    portal.addEventListener('mousemove', (e) => {
+      const rect = portal.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      portal.style.setProperty('--mx', x + '%');
+      portal.style.setProperty('--my', y + '%');
+    });
+  }
 
   // ---- NAVBAR + PROGRESS ----
   const navbar      = document.getElementById('navbar');
